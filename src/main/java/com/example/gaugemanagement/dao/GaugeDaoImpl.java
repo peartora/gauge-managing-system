@@ -1,6 +1,5 @@
 package com.example.gaugemanagement.dao;
 
-import com.example.gaugemanagement.gaugeStatus.GaugeStatus;
 import com.example.gaugemanagement.returnEntity.GaugeEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -53,12 +52,23 @@ public class GaugeDaoImpl implements GaugeDao
 
         return this.namedParameterJdbcTemplate.query(sql, (rs, rowNum) ->
         {
+            GaugeEntity gaugeEntity = new GaugeEntity();
+
             Date validUltil = rs.getDate("valid-until");
             LocalDate localDateValidUntil = validUltil.toLocalDate();
-            Date sendDateToQmm2 = rs.getDate("send-date-qmm2");
-            LocalDate localDateSendDateToQmm2 = sendDateToQmm2.toLocalDate();
 
-            GaugeEntity gaugeEntity = new GaugeEntity();
+            Date sendDateToQmm2;
+            LocalDate localDateSendDateToQmm2 = null;
+
+            try
+            {
+                sendDateToQmm2 = rs.getDate("send-date-qmm2");
+                localDateSendDateToQmm2 = sendDateToQmm2.toLocalDate();
+            }
+            catch (NullPointerException e)
+            {
+                gaugeEntity.setSendDateToQmm2(null);
+            }
 
             gaugeEntity.setGaugeNumber(rs.getString("gauge-number"));
             gaugeEntity.setValidUntil(localDateValidUntil);
@@ -74,4 +84,16 @@ public class GaugeDaoImpl implements GaugeDao
             return gaugeEntity;
         });
     }
+
+//    public void setGaugeStatus(LocalDate validUntil)
+//    {
+//        LocalDate today = LocalDate.now();
+//        LocalDate oneMonthFromNow = today.plusMonths(1);
+//
+//
+//        if (validUntil.isAfter(oneMonthFromNow))
+//        {
+//            // 1달 이상 남음
+//        }
+//    }
 }

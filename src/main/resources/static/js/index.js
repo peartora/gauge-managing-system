@@ -69,33 +69,51 @@ function createAndFillTable(gaugeData)
     const gaugeNumberTdElement = row.insertCell();
     const validUntilTdElement = row.insertCell();
     const gaugeStatusTdElement = row.insertCell();
-    const sendDateToQmm2TdElement = row.insertCell();
-    const quotationTdElement = row.insertCell();
-    const sendTdElement = row.insertCell();
-    const orderConfirmationTdElement = row.insertCell();
-    const arriveBackTdElement = row.insertCell();
     const gaugeDescriptionTdElement = row.insertCell();
-    const personTdElement = row.insertCell();
+    const engineerTdElement = row.insertCell();
 
     const gaugeNumberTextNode = document.createTextNode(gaugeNumber);
     const validUntilTextNode = document.createTextNode(validUntil);
     const gaugeStatusTextNode = document.createTextNode(gaugeStatus);
-    const sendDateTextNode = document.createTextNode(sendDateToQmm2);
-    const quotationTextNode = document.createTextNode(quotationResult);
-    const sendTextNode = document.createTextNode(sendResult);
-    const orderConfirmationTextNode = document.createTextNode(orderResult);
-    const arriveBackTextNode = document.createTextNode(arriveResult);
     const gaugeDescriptionTextNode = document.createTextNode(gaugeDescription);
     const engineerTextNode = document.createTextNode(engineer);
 
     gaugeNumberTdElement.appendChild(gaugeNumberTextNode);
     validUntilTdElement.appendChild(validUntilTextNode);
     gaugeStatusTdElement.appendChild(gaugeStatusTextNode);
-    sendDateToQmm2TdElement.appendChild(sendDateTextNode);
-    quotationTdElement.appendChild(quotationTextNode);
-    sendTdElement.appendChild(sendTextNode);
-    orderConfirmationTdElement.appendChild(orderConfirmationTextNode);
-    arriveBackTdElement.appendChild(arriveBackTextNode);
     gaugeDescriptionTdElement.appendChild(gaugeDescriptionTextNode);
-    personTdElement.appendChild(engineerTextNode);
+    engineerTdElement.appendChild(engineerTextNode);
+
+    const sendDateToQmm2TdElement = row.insertCell();
+
+    if (sendDateToQmm2)
+    {
+        const quotationTdElement = row.insertCell();
+        const sendTdElement = row.insertCell();
+        const orderConfirmationTdElement = row.insertCell();
+        const arriveBackTdElement = row.insertCell();
+
+        const sendDateTextNode = document.createTextNode(sendDateToQmm2);
+        const quotationTextNode = document.createTextNode(quotationResult);
+        const sendTextNode = document.createTextNode(sendResult);
+        const orderConfirmationTextNode = document.createTextNode(orderResult);
+        const arriveBackTextNode = document.createTextNode(arriveResult);
+
+        sendDateToQmm2TdElement.appendChild(sendDateTextNode);
+        quotationTdElement.appendChild(quotationTextNode);
+        sendTdElement.appendChild(sendTextNode);
+        orderConfirmationTdElement.appendChild(orderConfirmationTextNode);
+        arriveBackTdElement.appendChild(arriveBackTextNode);
+    }
+    else
+    {
+        const inputElement = document.createElement('input');
+        inputElement.classList.add("sendDate");
+        inputElement.type = 'date';
+        sendDateToQmm2TdElement.appendChild(inputElement);
+
+        const remainTdElement = row.insertCell();
+        remainTdElement.colSpan = 4;
+        remainTdElement.innerText = `해당없음`;
+    }
 }
