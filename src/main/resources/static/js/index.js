@@ -50,12 +50,7 @@ function displayGaugeList(data)
 
 function createAndFillTable(gaugeData)
 {
-    const { gaugeNumber, validUntil, gaugeStatus, sendDateToQmm2, isQuotationRecieved, isGaugeSent, isOrderconfirmed, isGaugeArrivedBackToDaep, gaugeDescription, engineer } = gaugeData;
-
-    const quotationResult = isQuotationRecieved? "Done" : "Pending";
-    const sendResult = isGaugeSent? "Done" : "Pending";
-    const orderResult = isOrderconfirmed? "Done" : "Pending";
-    const arriveResult = isGaugeArrivedBackToDaep? "Done" : "Pending";
+    const { gaugeNumber, validUntil, gaugeStatus, sendDateToQmm2, gaugeDescription, engineer } = gaugeData;
 
     const tBodyElement = document.getElementById('t-body');
     const row = tBodyElement.insertRow();
@@ -88,22 +83,66 @@ function createAndFillTable(gaugeData)
 
     if (sendDateToQmm2)
     {
-        const quotationTdElement = row.insertCell();
-        const sendTdElement = row.insertCell();
-        const orderConfirmationTdElement = row.insertCell();
-        const arriveBackTdElement = row.insertCell();
-
         const sendDateTextNode = document.createTextNode(sendDateToQmm2);
-        const quotationTextNode = document.createTextNode(quotationResult);
-        const sendTextNode = document.createTextNode(sendResult);
-        const orderConfirmationTextNode = document.createTextNode(orderResult);
-        const arriveBackTextNode = document.createTextNode(arriveResult);
-
         sendDateToQmm2TdElement.appendChild(sendDateTextNode);
+
+        const quotationTdElement = row.insertCell();
+        quotationTdElement.colSpan = 2;
+
+        const sendTdElement = row.insertCell();
+        sendTdElement.colSpan = 2;
+
+        const orderConfirmationTdElement = row.insertCell();
+        orderConfirmationTdElement.colSpan = 2;
+
+        const arriveBackTdElement = row.insertCell();
+        arriveBackTdElement.colSpan = 2;
+
+        const startDate = new Date(sendDateToQmm2);
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const formatter = new Intl.DateTimeFormat('en-US', options);
+
+        const expectedQuotationReceivedDate = startDate.setDate(startDate.getDate() + 7);
+        const formattedExpectedQuotationReceivedDate = formatter.format(expectedQuotationReceivedDate);
+
+        const expectedSendDate = startDate.setDate(14);
+        const formattedExpectedSendDate = formatter.format(expectedSendDate);
+
+        const expectedOrderConfirmedDate = startDate.setDate(21);
+        const formattedExpectedOrderConfirmedDate = formatter.format(expectedOrderConfirmedDate);
+
+        const expectedArriveBackDate = startDate.setDate(60);
+        const formattedExpectedArriveBackDate = formatter.format(expectedArriveBackDate);
+
+        const quotationTextNode = document.createTextNode(formattedExpectedQuotationReceivedDate);
+        const sendTextNode = document.createTextNode(formattedExpectedSendDate);
+        const orderConfirmationTextNode = document.createTextNode(formattedExpectedOrderConfirmedDate);
+        const arriveBackTextNode = document.createTextNode(formattedExpectedArriveBackDate);
+
+        const quotationSelect = document.createElement("select");
+        const quotationSelectWithOptions = createSelectNode(quotationSelect);
+
+        const sendSelect = document.createElement("select");
+        const sendSelectWithOptions = createSelectNode(sendSelect);
+
+        const orderConfirmationSelect = document.createElement("select");
+        const orderConfirmationSelectWithOptions = createSelectNode(orderConfirmationSelect);
+
+        const arriveBackSelect = document.createElement("select");
+        const arriveBackSelectWithOptions = createSelectNode(arriveBackSelect);
+
+
         quotationTdElement.appendChild(quotationTextNode);
+        quotationTdElement.appendChild(quotationSelectWithOptions);
+
         sendTdElement.appendChild(sendTextNode);
+        sendTdElement.appendChild(sendSelectWithOptions);
+
         orderConfirmationTdElement.appendChild(orderConfirmationTextNode);
+        orderConfirmationTdElement.appendChild(orderConfirmationSelectWithOptions);
+
         arriveBackTdElement.appendChild(arriveBackTextNode);
+        arriveBackTdElement.appendChild(arriveBackSelectWithOptions);
     }
     else
     {
@@ -113,7 +152,21 @@ function createAndFillTable(gaugeData)
         sendDateToQmm2TdElement.appendChild(inputElement);
 
         const remainTdElement = row.insertCell();
-        remainTdElement.colSpan = 4;
+        remainTdElement.colSpan = 8;
         remainTdElement.innerText = `해당없음`;
     }
+}
+
+function createSelectNode(selectNode)
+{
+    const activityOptions = ['Pending', 'Done'];
+
+    activityOptions.forEach(option =>
+    {
+        const optionElement = document.createElement('option');
+        optionElement.value = option;
+        optionElement.textContent = option;
+        selectNode.appendChild(optionElement);
+    })
+    return selectNode;
 }
