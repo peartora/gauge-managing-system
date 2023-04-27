@@ -2,11 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>게이지 해외 검교정 관리 System.</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+
+    <style>
+        .red {color: red;}
+    </style>
+
 </head>
 <body>
-    <table>
-        <thead>
+    <div class="container pt-3">
+        <nav class="navbar navbar-expand-lg bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">게이지 해외 검교정 관리 System</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="register.html">게이지 등록</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="register.html">게이지 삭제</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <table class="table table-bordered table-hover">
+            <thead>
             <tr>
                 <th>게이지 번호</th>
                 <th>유효기간</th>
@@ -17,13 +40,14 @@
                 <th>오더확인?</th>
                 <th>입고?</th>
                 <th>게이지설명</th>
-                <th>제조번호</th>
                 <th>담당자</th>
             </tr>
-        </thead>
-        <tbody id="t-body">
-        </tbody>
-    </table>
+            </thead>
+            <tbody id="t-body">
+            </tbody>
+        </table>
+    </div>
+
     <script type="module" src="./../js/index.js"></script>
 </body>
 </html>
