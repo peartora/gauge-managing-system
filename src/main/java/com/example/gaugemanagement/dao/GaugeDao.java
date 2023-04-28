@@ -9,4 +9,6 @@ public interface GaugeDao
 {
 
     List<GaugeEntity> returnGaugeList(Map<String, Object> params);
+    int recordDate(Map<String, Object> params);
+
 }

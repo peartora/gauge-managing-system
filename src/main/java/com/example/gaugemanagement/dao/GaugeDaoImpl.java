@@ -85,6 +85,12 @@ public class GaugeDaoImpl implements GaugeDao
         });
     }
 
+    @Override
+    public int recordDate(Map<String, Object> params)
+    {
+        return this.namedParameterJdbcTemplate.update("update `gauge-list` set `send-date-qmm2` = now() where `gauge-number` = :gaugeNumber", params);
+    }
+
 //    public void setGaugeStatus(LocalDate validUntil)
 //    {
 //        LocalDate today = LocalDate.now();
