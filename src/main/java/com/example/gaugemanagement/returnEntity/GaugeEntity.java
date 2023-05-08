@@ -14,10 +14,10 @@ public class GaugeEntity
     private String gaugeStatus;
     @Nullable
     private LocalDate sendDateToQmm2;
-    private boolean isQuotationReceived;
-    private boolean isGaugeSent;
-    private boolean isOrderConfirmed;
-    private boolean isGaugeArrivedBackToDaep;
+    private String isQuotationReceived;
+    private String isGaugeSent;
+    private String isOrderConfirmed;
+    private String isGaugeArrivedBackToDaep;
     private String gaugeDescription;
     private String engineer;
 }

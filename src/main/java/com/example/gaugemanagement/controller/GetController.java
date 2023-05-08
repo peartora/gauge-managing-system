@@ -21,6 +21,9 @@ public class GetController
     @GetMapping("/getGaugeList")
     public List<GaugeEntity> returnGaugeList(@RequestParam Map<String, Object> params)
     {
+        System.out.println("params");
+        System.out.println(params);
+
         return this.gaugeDaoImpl.returnGaugeList(params);
     }
 }

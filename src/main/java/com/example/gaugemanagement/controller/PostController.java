@@ -27,4 +27,23 @@ public class PostController
             return "제대로 등록 되지 않았습니다.";
         }
     }
+
+    @PostMapping("/recordGauge")
+    public String recordGauge(@RequestBody Map<String, Object> params)
+    {
+        System.out.println("params");
+        System.out.println(params);
+
+
+        int numberOfAffectedRows  = this.gaugeDaoImpl.recordGauge(params);
+
+        if (numberOfAffectedRows == 1)
+        {
+            return "게이지가 등록 되었습니다.";
+        }
+        else
+        {
+            return "제대로 등록 되지 않았습니다.";
+        }
+    }
 }

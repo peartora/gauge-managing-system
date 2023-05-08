@@ -1,4 +1,4 @@
-'use static';
+'use strict';
 
 export const request =
 {
@@ -63,15 +63,18 @@ function encodeQueryData(data)
 
 function updateGaugeList(data)
 {
+
     for (let i = 0; i < data.length; i++)
     {
+        console.log(`return 된 게이지`);
+        console.log(data[i]);
         createAndFillTable(data[i]);
     }
 }
 
 function createAndFillTable(gaugeData)
 {
-    const { gaugeNumber, validUntil, gaugeStatus, sendDateToQmm2, gaugeDescription, engineer } = gaugeData;
+    const { gaugeNumber, validUntil, gaugeStatus, sendDateToQmm2, isQuotationReceived, isGaugeSent, isOrderConfirmed, isGaugeArrivedBackToDaep, gaugeDescription, engineer } = gaugeData;
 
     const tBodyElement = document.getElementById('t-body');
     const row = tBodyElement.insertRow();
@@ -142,16 +145,20 @@ function createAndFillTable(gaugeData)
 
         const quotationSelect = document.createElement("select");
         const quotationSelectWithOptions = createSelectNode(quotationSelect);
+        quotationSelectWithOptions.value = isQuotationReceived;
 
         const sendSelect = document.createElement("select");
         const sendSelectWithOptions = createSelectNode(sendSelect);
+        sendSelectWithOptions.value = isGaugeSent;
+
 
         const orderConfirmationSelect = document.createElement("select");
         const orderConfirmationSelectWithOptions = createSelectNode(orderConfirmationSelect);
+        orderConfirmationSelectWithOptions.value = isOrderConfirmed;
 
         const arriveBackSelect = document.createElement("select");
         const arriveBackSelectWithOptions = createSelectNode(arriveBackSelect);
-
+        arriveBackSelectWithOptions.value = isGaugeArrivedBackToDaep;
 
         quotationTdElement.appendChild(quotationTextNode);
         quotationTdElement.appendChild(quotationSelectWithOptions);
@@ -181,7 +188,7 @@ function createAndFillTable(gaugeData)
 
 function createSelectNode(selectNode)
 {
-    const activityOptions = ['Pending', 'Done'];
+    const activityOptions = ['PENDING', 'DONE'];
 
     activityOptions.forEach(option =>
     {

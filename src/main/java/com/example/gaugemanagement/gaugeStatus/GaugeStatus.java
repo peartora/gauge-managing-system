@@ -2,7 +2,7 @@ package com.example.gaugemanagement.gaugeStatus;
 
 public enum GaugeStatus
 {
-    사용중(0), QMM2전달(1), 견적수령(2), 오더확인(3), 입고(4), 사용금지(5), 기한만료1달전(6);
+    유효(0), 유효기간초과(1), 유효기간만료1달미만(2), 사용금지(3);
 
     int statusValue;
 
@@ -10,4 +10,8 @@ public enum GaugeStatus
     {
         this.statusValue = statusValue;
     }
+
+
+
+
 }

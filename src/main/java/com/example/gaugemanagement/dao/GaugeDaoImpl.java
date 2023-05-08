@@ -16,6 +16,7 @@ import java.util.Objects;
 public class GaugeDaoImpl implements GaugeDao
 {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private LocalDate localDateValidUntil;
 
     @Override
     public List<GaugeEntity> returnGaugeList(Map<String, Object> params)
@@ -54,8 +55,8 @@ public class GaugeDaoImpl implements GaugeDao
         {
             GaugeEntity gaugeEntity = new GaugeEntity();
 
-            Date validUltil = rs.getDate("valid-until");
-            LocalDate localDateValidUntil = validUltil.toLocalDate();
+            Date validUntil = rs.getDate("valid-until");
+            LocalDate localDateValidDate = validUntil.toLocalDate();
 
             Date sendDateToQmm2;
             LocalDate localDateSendDateToQmm2 = null;
@@ -71,13 +72,14 @@ public class GaugeDaoImpl implements GaugeDao
             }
 
             gaugeEntity.setGaugeNumber(rs.getString("gauge-number"));
-            gaugeEntity.setValidUntil(localDateValidUntil);
+            gaugeEntity.setValidUntil(localDateValidDate);
+
             gaugeEntity.setGaugeStatus(rs.getString("gauge-status"));
             gaugeEntity.setSendDateToQmm2(localDateSendDateToQmm2);
-            gaugeEntity.setQuotationReceived(rs.getBoolean("is-quotation-recieved"));
-            gaugeEntity.setGaugeSent(rs.getBoolean("is-gauge-sent"));
-            gaugeEntity.setOrderConfirmed(rs.getBoolean("is-orderconfirmed"));
-            gaugeEntity.setGaugeArrivedBackToDaep(rs.getBoolean("is-gauge-arrived-back-to-daep"));
+            gaugeEntity.setIsQuotationReceived(rs.getString("is-quotation-recieved"));
+            gaugeEntity.setIsGaugeSent(rs.getString("is-gauge-sent"));
+            gaugeEntity.setIsOrderConfirmed(rs.getString("is-orderconfirmed"));
+            gaugeEntity.setIsGaugeArrivedBackToDaep(rs.getString("is-gauge-arrived-back-to-daep"));
             gaugeEntity.setGaugeDescription(rs.getString("gauge-description"));
             gaugeEntity.setEngineer(rs.getString("person"));
 
@@ -91,15 +93,35 @@ public class GaugeDaoImpl implements GaugeDao
         return this.namedParameterJdbcTemplate.update("update `gauge-list` set `send-date-qmm2` = now() where `gauge-number` = :gaugeNumber", params);
     }
 
-//    public void setGaugeStatus(LocalDate validUntil)
-//    {
-//        LocalDate today = LocalDate.now();
-//        LocalDate oneMonthFromNow = today.plusMonths(1);
-//
-//
-//        if (validUntil.isAfter(oneMonthFromNow))
-//        {
-//            // 1달 이상 남음
-//        }
-//    }
+    @Override
+    public int recordGauge(Map<String, Object> params)
+    {
+        String strValidUntil = (String) params.get("validUntil");
+        LocalDate validUntil = LocalDate.parse(strValidUntil);
+        params.put("gaugeStatus", setGaugeStatus(validUntil));
+
+        return this.namedParameterJdbcTemplate.update("insert into `gauge-list` (`gauge-number`, `valid-until`, `gauge-status`, `gauge-description`, `manufacturing-number`, `person`) values (:gaugeNumber, :validUntil, :gaugeStatus, :description, :manufacturingNumber, :person)", params);
+    }
+
+    private String setGaugeStatus(LocalDate validUntil)
+    {
+        LocalDate oneMonthAgoFromValidUntil = validUntil.minusMonths(1);
+        LocalDate today = LocalDate.now();
+
+        if (today.isBefore(validUntil))
+        {
+            if (today.isBefore(oneMonthAgoFromValidUntil))
+            {
+                return "유효";
+            }
+            else
+            {
+                return "유효기간만료1달미만";
+            }
+        }
+        else
+        {
+            return "유효기간초과";
+        }
+    }
 }
