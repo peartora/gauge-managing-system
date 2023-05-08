@@ -49,4 +49,22 @@ public class PostController
             return "제대로 등록 되지 않았습니다.";
         }
     }
+
+    @PostMapping("/update")
+    public String update(@RequestBody Map<String, Object> params)
+    {
+        System.out.println("params");
+        System.out.println(params);
+
+        int numberOfAffectedRows  = this.gaugeDaoImpl.update(params);
+
+        if (numberOfAffectedRows == 1)
+        {
+            return "상태 변경 되었습니다.";
+        }
+        else
+        {
+            return "상태 변경 중 error가 발생 하였습니다.";
+        }
+    }
 }

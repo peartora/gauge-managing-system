@@ -141,21 +141,28 @@ function createAndFillTable(gaugeData)
         const orderConfirmationTextNode = document.createTextNode(formattedExpectedOrderConfirmedDate);
         const arriveBackTextNode = document.createTextNode(formattedExpectedArriveBackDate);
 
+
+
+
         const quotationSelect = document.createElement("select");
         const quotationSelectWithOptions = createSelectNode(quotationSelect);
+        addEventListenerForSelect(quotationSelectWithOptions, gaugeNumber, 'is-quotation-recieved');
         quotationSelectWithOptions.value = isQuotationReceived;
 
         const sendSelect = document.createElement("select");
         const sendSelectWithOptions = createSelectNode(sendSelect);
+        addEventListenerForSelect(sendSelectWithOptions, gaugeNumber, 'is-gauge-sent');
         sendSelectWithOptions.value = isGaugeSent;
 
 
         const orderConfirmationSelect = document.createElement("select");
         const orderConfirmationSelectWithOptions = createSelectNode(orderConfirmationSelect);
+        addEventListenerForSelect(orderConfirmationSelectWithOptions, gaugeNumber, 'is-orderconfirmed');
         orderConfirmationSelectWithOptions.value = isOrderConfirmed;
 
         const arriveBackSelect = document.createElement("select");
         const arriveBackSelectWithOptions = createSelectNode(arriveBackSelect);
+        addEventListenerForSelect(arriveBackSelectWithOptions, gaugeNumber, 'is-gauge-arrived-back-to-daep');
         arriveBackSelectWithOptions.value = isGaugeArrivedBackToDaep;
 
         quotationTdElement.appendChild(quotationTextNode);
@@ -229,4 +236,27 @@ function clearTBody()
     {
         tBodyElement.removeChild(tBodyElement.firstChild);
     }
+}
+
+function addEventListenerForSelect(selectNode, gaugeNumber, column)
+{
+    selectNode.addEventListener('change', event =>
+    {
+        const data = {};
+        data['gaugeNumber'] = gaugeNumber;
+        data['column'] = column;
+        data['status'] = event.target.value;
+
+        request.post(`/gauge-managing-system/update`, data)
+            .then(response =>
+            {
+                if (!response.ok) throw new Error(`견적접수 관련 status 변경 중 error가 발생 하였습니다.`);
+                return response.text();
+            })
+            .then(result =>
+            {
+                alert(result);
+            })
+            .catch(console.error(error));
+    })
 }

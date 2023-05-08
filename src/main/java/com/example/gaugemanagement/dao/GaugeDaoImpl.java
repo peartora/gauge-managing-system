@@ -124,4 +124,14 @@ public class GaugeDaoImpl implements GaugeDao
             return "유효기간초과";
         }
     }
+
+    @Override
+    public int update(Map<String, Object> params)
+    {
+        String columnName =(String) params.get("column");
+        String sql = "update `gauge-list` set `" + columnName + "` = :status where `gauge-number` = :gaugeNumber";
+        System.out.println(sql);
+
+        return this.namedParameterJdbcTemplate.update(sql, params);
+    }
 }
