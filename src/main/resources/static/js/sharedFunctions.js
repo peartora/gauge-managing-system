@@ -66,8 +66,6 @@ function updateGaugeList(data)
 
     for (let i = 0; i < data.length; i++)
     {
-        console.log(`return 된 게이지`);
-        console.log(data[i]);
         createAndFillTable(data[i]);
     }
 }
