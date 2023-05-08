@@ -25,9 +25,9 @@ export function displayGaugeList(queryParams)
 {
     clearTBody();
 
-    const queryString = `${encodeQueryData(queryParams)}`;
+    // const queryString = `${encodeQueryData(queryParams)}`;
 
-    request.get(`/gauge-managing-system/getGaugeList?${queryString}`)
+    request.get(`/gauge-managing-system/getGaugeList`)
         .then(response =>
         {
             console.log(response);
@@ -210,13 +210,15 @@ function recordSendDateToQmm(e, gaugeNumber)
     request.post(`/gauge-managing-system/recordDate`, params)
         .then(response =>
         {
-            if (!response.ok)
-            {
-                throw new Error(response.statusText);
-            }
-            const queryParams = {'gauge-status': '유효기간만료1달미만'};
-            displayGaugeList(queryParams);
+            if (!response.ok) throw new Error(response.statusText);
+            return response.text();
         })
+        .then(result =>
+        {
+            displayGaugeList();
+            alert(result)
+        })
+        .catch(error => console.error(error));
 }
 
 function clearTBody()
