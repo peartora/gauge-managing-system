@@ -202,7 +202,12 @@ function createSelectNode(selectNode)
 
 function recordSendDateToQmm(e, gaugeNumber)
 {
-    const params = { gaugeNumber: gaugeNumber };
+    const date = e.target.value;
+
+    const params = {};
+
+    params['gaugeNumber'] = gaugeNumber;
+    params['sendDateToQmm'] = date;
 
     request.post(`/gauge-managing-system/recordDate`, params)
         .then(response =>

@@ -90,7 +90,7 @@ public class GaugeDaoImpl implements GaugeDao
     @Override
     public int recordDate(Map<String, Object> params)
     {
-        return this.namedParameterJdbcTemplate.update("update `gauge-list` set `send-date-qmm2` = now() where `gauge-number` = :gaugeNumber", params);
+        return this.namedParameterJdbcTemplate.update("update `gauge-list` set `send-date-qmm2` = :sendDateToQmm, `gauge-status` = '수출대기' where `gauge-number` = :gaugeNumber", params);
     }
 
     @Override
