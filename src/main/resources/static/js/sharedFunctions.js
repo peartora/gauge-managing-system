@@ -148,14 +148,12 @@ function createAndFillTable(gaugeData)
         let orderConfirmationSelectWithOptions;
         let arriveBackSelectWithOptions;
 
-        quotationSelectWithOptions = createQuotationSelectWithOptions(gaugeNumber, isQuotationReceived, true);
-        sendSelectWithOptions = createSendSelectWithOptions(gaugeNumber, isGaugeSent, false);
-        orderConfirmationSelectWithOptions = createOrderConfirmationSelectWithOptions(gaugeNumber, isOrderConfirmed, false);
-        arriveBackSelectWithOptions = createArriveBackSelectWithOptions(gaugeNumber, isGaugeArrivedBackToDaep, false);
-
         if (isGaugeArrivedBackToDaep === 'DONE')
         {
-            alert("신규로 할당 된 valid-until 날짜를 입력하세요");
+            quotationSelectWithOptions = createQuotationSelectWithOptions(gaugeNumber, isQuotationReceived, false);
+            sendSelectWithOptions = createSendSelectWithOptions(gaugeNumber, isGaugeSent, false);
+            orderConfirmationSelectWithOptions = createOrderConfirmationSelectWithOptions(gaugeNumber, isOrderConfirmed, false);
+            arriveBackSelectWithOptions = createArriveBackSelectWithOptions(gaugeNumber, isGaugeArrivedBackToDaep, false);
         }
         else if (isOrderConfirmed === 'DONE')
         {
