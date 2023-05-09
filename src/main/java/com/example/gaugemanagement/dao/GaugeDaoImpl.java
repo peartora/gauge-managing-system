@@ -90,7 +90,7 @@ public class GaugeDaoImpl implements GaugeDao
     @Override
     public int recordDate(Map<String, Object> params)
     {
-        return this.namedParameterJdbcTemplate.update("update `gauge-list` set `send-date-qmm2` = :sendDateToQmm, `gauge-status` = '수출대기' where `gauge-number` = :gaugeNumber", params);
+        return this.namedParameterJdbcTemplate.update("update `gauge-list` set `send-date-qmm2` = :sendDateToQmm, `gauge-status` = '수출대기', `is-quotation-recieved` = 'PENDING'  where `gauge-number` = :gaugeNumber", params);
     }
 
     @Override
@@ -128,8 +128,33 @@ public class GaugeDaoImpl implements GaugeDao
     @Override
     public int update(Map<String, Object> params)
     {
-        String columnName =(String) params.get("column");
-        String sql = "update `gauge-list` set `" + columnName + "` = :status where `gauge-number` = :gaugeNumber";
+        String columnName = (String) params.get("column");
+        params.put("nextStatus", "PENDING");
+
+        String sql = "";
+        String nextColumnName = "";
+
+        if (Objects.equals(columnName, "is-quotation-recieved"))
+        {
+            nextColumnName = "is-gauge-sent";
+            sql = "update `gauge-list` set `" + columnName + "` = :status, `" + nextColumnName + "` = :nextStatus where `gauge-number` = :gaugeNumber";
+        }
+        else if (Objects.equals(columnName, "is-gauge-sent"))
+        {
+            nextColumnName = "is-orderconfirmed";
+            sql = "update `gauge-list` set `" + columnName + "` = :status, `" + nextColumnName + "` = :nextStatus where `gauge-number` = :gaugeNumber";
+        }
+        else if (Objects.equals(columnName, "is-orderconfirmed"))
+        {
+            nextColumnName = "is-gauge-arrived-back-to-daep";
+            sql = "update `gauge-list` set `" + columnName + "` = :status, `" + nextColumnName + "` = :nextStatus where `gauge-number` = :gaugeNumber";
+        }
+        else if (Objects.equals(columnName, "is-gauge-arrived-back-to-daep"))
+        {
+            sql = "update `gauge-list` set `" + columnName + "` = :status where `gauge-number` = :gaugeNumber";
+        }
+
+        System.out.println("sql");
         System.out.println(sql);
 
         return this.namedParameterJdbcTemplate.update(sql, params);

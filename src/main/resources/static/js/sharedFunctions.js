@@ -21,7 +21,7 @@ export const request =
     },
 };
 
-export function displayGaugeList(queryParams)
+export function displayGaugeList()
 {
     clearTBody();
 
@@ -141,29 +141,50 @@ function createAndFillTable(gaugeData)
         const orderConfirmationTextNode = document.createTextNode(formattedExpectedOrderConfirmedDate);
         const arriveBackTextNode = document.createTextNode(formattedExpectedArriveBackDate);
 
+        // isQuotationReceived, isGaugeSent, isOrderConfirmed, isGaugeArrivedBackToDaep,
 
+        let quotationSelectWithOptions;
+        let sendSelectWithOptions;
+        let orderConfirmationSelectWithOptions;
+        let arriveBackSelectWithOptions;
 
+        quotationSelectWithOptions = createQuotationSelectWithOptions(gaugeNumber, isQuotationReceived, true);
+        sendSelectWithOptions = createSendSelectWithOptions(gaugeNumber, isGaugeSent, false);
+        orderConfirmationSelectWithOptions = createOrderConfirmationSelectWithOptions(gaugeNumber, isOrderConfirmed, false);
+        arriveBackSelectWithOptions = createArriveBackSelectWithOptions(gaugeNumber, isGaugeArrivedBackToDaep, false);
 
-        const quotationSelect = document.createElement("select");
-        const quotationSelectWithOptions = createSelectNode(quotationSelect);
-        addEventListenerForSelect(quotationSelectWithOptions, gaugeNumber, 'is-quotation-recieved');
-        quotationSelectWithOptions.value = isQuotationReceived;
-
-        const sendSelect = document.createElement("select");
-        const sendSelectWithOptions = createSelectNode(sendSelect);
-        addEventListenerForSelect(sendSelectWithOptions, gaugeNumber, 'is-gauge-sent');
-        sendSelectWithOptions.value = isGaugeSent;
-
-
-        const orderConfirmationSelect = document.createElement("select");
-        const orderConfirmationSelectWithOptions = createSelectNode(orderConfirmationSelect);
-        addEventListenerForSelect(orderConfirmationSelectWithOptions, gaugeNumber, 'is-orderconfirmed');
-        orderConfirmationSelectWithOptions.value = isOrderConfirmed;
-
-        const arriveBackSelect = document.createElement("select");
-        const arriveBackSelectWithOptions = createSelectNode(arriveBackSelect);
-        addEventListenerForSelect(arriveBackSelectWithOptions, gaugeNumber, 'is-gauge-arrived-back-to-daep');
-        arriveBackSelectWithOptions.value = isGaugeArrivedBackToDaep;
+        if (isGaugeArrivedBackToDaep === 'DONE')
+        {
+            alert("신규로 할당 된 valid-until 날짜를 입력하세요");
+        }
+        else if (isOrderConfirmed === 'DONE')
+        {
+            quotationSelectWithOptions = createQuotationSelectWithOptions(gaugeNumber, isQuotationReceived, false);
+            sendSelectWithOptions = createSendSelectWithOptions(gaugeNumber, isGaugeSent, false);
+            orderConfirmationSelectWithOptions = createOrderConfirmationSelectWithOptions(gaugeNumber, isOrderConfirmed, false);
+            arriveBackSelectWithOptions = createArriveBackSelectWithOptions(gaugeNumber, isGaugeArrivedBackToDaep, true);
+        }
+        else if (isGaugeSent === 'DONE')
+        {
+            quotationSelectWithOptions = createQuotationSelectWithOptions(gaugeNumber, isQuotationReceived, false);
+            sendSelectWithOptions = createSendSelectWithOptions(gaugeNumber, isGaugeSent, false);
+            orderConfirmationSelectWithOptions = createOrderConfirmationSelectWithOptions(gaugeNumber, isOrderConfirmed, true);
+            arriveBackSelectWithOptions = createArriveBackSelectWithOptions(gaugeNumber, isGaugeArrivedBackToDaep, false);
+        }
+        else if (isQuotationReceived === 'DONE')
+        {
+            quotationSelectWithOptions = createQuotationSelectWithOptions(gaugeNumber, isQuotationReceived, false);
+            sendSelectWithOptions = createSendSelectWithOptions(gaugeNumber, isGaugeSent, true);
+            orderConfirmationSelectWithOptions = createOrderConfirmationSelectWithOptions(gaugeNumber, isOrderConfirmed, false);
+            arriveBackSelectWithOptions = createArriveBackSelectWithOptions(gaugeNumber, isGaugeArrivedBackToDaep, false);
+        }
+        else if (isQuotationReceived === 'PENDING')
+        {
+            quotationSelectWithOptions = createQuotationSelectWithOptions(gaugeNumber, isQuotationReceived, true);
+            sendSelectWithOptions = createSendSelectWithOptions(gaugeNumber, isGaugeSent, false);
+            orderConfirmationSelectWithOptions = createOrderConfirmationSelectWithOptions(gaugeNumber, isOrderConfirmed, false);
+            arriveBackSelectWithOptions = createArriveBackSelectWithOptions(gaugeNumber, isGaugeArrivedBackToDaep, false);
+        }
 
         quotationTdElement.appendChild(quotationTextNode);
         quotationTdElement.appendChild(quotationSelectWithOptions);
@@ -191,7 +212,7 @@ function createAndFillTable(gaugeData)
     }
 }
 
-function createSelectNode(selectNode)
+function createSelectNode(selectNode, active)
 {
     const activityOptions = ['PENDING', 'DONE'];
 
@@ -200,6 +221,12 @@ function createSelectNode(selectNode)
         const optionElement = document.createElement('option');
         optionElement.value = option;
         optionElement.textContent = option;
+
+        if (!active)
+        {
+            optionElement.disabled = true;
+        }
+
         selectNode.appendChild(optionElement);
     })
     return selectNode;
@@ -255,8 +282,49 @@ function addEventListenerForSelect(selectNode, gaugeNumber, column)
             })
             .then(result =>
             {
-                alert(result);
+                displayGaugeList();
+                // alert(result);
             })
             .catch(console.error(error));
     })
+}
+
+function createQuotationSelectWithOptions(gaugeNumber, isQuotationReceived, active)
+{
+    const quotationSelect = document.createElement("select");
+    const quotationSelectWithOptions = createSelectNode(quotationSelect, active);
+    addEventListenerForSelect(quotationSelectWithOptions, gaugeNumber, 'is-quotation-recieved');
+    quotationSelectWithOptions.value = isQuotationReceived;
+
+    return quotationSelectWithOptions;
+}
+
+function createSendSelectWithOptions(gaugeNumber, isGaugeSent, active)
+{
+    const sendSelect = document.createElement("select");
+    const sendSelectWithOptions = createSelectNode(sendSelect, active);
+    addEventListenerForSelect(sendSelectWithOptions, gaugeNumber, 'is-gauge-sent');
+    sendSelectWithOptions.value = isGaugeSent;
+
+    return sendSelectWithOptions;
+}
+
+function createOrderConfirmationSelectWithOptions(gaugeNumber, isOrderConfirmed, active)
+{
+    const orderConfirmationSelect = document.createElement("select");
+    const orderConfirmationSelectWithOptions = createSelectNode(orderConfirmationSelect, active);
+    addEventListenerForSelect(orderConfirmationSelectWithOptions, gaugeNumber, 'is-orderconfirmed');
+    orderConfirmationSelectWithOptions.value = isOrderConfirmed;
+
+    return orderConfirmationSelectWithOptions;
+}
+
+function createArriveBackSelectWithOptions(gaugeNumber, isGaugeArrivedBackToDaep, active)
+{
+    const arriveBackSelect = document.createElement("select");
+    const arriveBackSelectWithOptions = createSelectNode(arriveBackSelect, active);
+    addEventListenerForSelect(arriveBackSelectWithOptions, gaugeNumber, 'is-gauge-arrived-back-to-daep');
+    arriveBackSelectWithOptions.value = isGaugeArrivedBackToDaep;
+
+    return arriveBackSelectWithOptions;
 }

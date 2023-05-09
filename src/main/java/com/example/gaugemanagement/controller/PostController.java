@@ -23,7 +23,7 @@ public class PostController
 
         if (numberOfAffectedRows == 1)
         {
-            return "QMM2 전달 날짜가 등록 되었고, 게이지의 상태가 사용금지로 변경 되었습니다.";
+            return "QMM2 전달 날짜가 등록 되었고, 게이지의 상태가 수출대기로 변경 되었습니다.";
         }
         else
         {
